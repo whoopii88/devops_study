@@ -1,0 +1,92 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = true
+  config.vm.define "k8s-master" do |master|
+    master.vm.box = "generic/ubuntu2204"
+    master.vm.box_version = "4.3.12"
+    master.vm.network "private_network", ip: "192.168.56.100"
+    master.vm.network "public_network"
+    master.vm.hostname = "k8s-master"
+    master.vm.disk :disk, size: "50GB", name: "k8s-master-disk"
+    master.vm.provider "virtualbox" do |vb|
+      vb.gui = true
+      vb.memory = "4096"
+      vb.cpus = "2"
+    end
+    master.vm.provision "shell", path: "config.sh"
+    master.vm.provision "shell", path: "kube_install.sh"
+  end
+
+  config.vm.define "k8s-node1" do |node1|
+    node1.vm.box = "generic/ubuntu2204"
+    node1.vm.box_version = "4.3.12"
+    # config.vm.network "forwarded_port", guest: 80, host: 8080
+    # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+    node1.vm.network "private_network", ip: "192.168.56.101"
+    node1.vm.network "public_network"
+    # config.vm.synced_folder ".", "/vagrant", disabled: true
+    
+    node1.vm.hostname = "k8s-node1"
+    node1.vm.disk :disk, size: "50GB", name: "k8s-node1-disk"
+    node1.vm.provider "virtualbox" do |vb|
+      vb.gui = true
+      vb.memory = "4096"
+      vb.cpus = "2"
+    end
+    node1.vm.provision "shell", path: "config.sh"
+    node1.vm.provision "shell", path: "kube_install.sh"
+  end
+
+  config.vm.define "k8s-node2" do |node2|
+    node2.vm.box = "generic/ubuntu2204"
+    node2.vm.box_version = "4.3.12"
+    # config.vm.network "forwarded_port", guest: 80, host: 8080
+    # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+    node2.vm.network "private_network", ip: "192.168.56.102"
+    node2.vm.network "public_network"
+    # config.vm.synced_folder ".", "/vagrant", disabled: true
+    
+    node2.vm.hostname = "k8s-node1"
+    node2.vm.disk :disk, size: "50GB", name: "k8s-node2-disk"
+    node2.vm.provider "virtualbox" do |vb|
+      vb.gui = true
+      vb.memory = "4096"
+      vb.cpus = "2"
+    end
+    node2.vm.provision "shell", path: "config.sh"
+    node2.vm.provision "shell", path: "kube_install.sh"
+  end
+
+  config.vm.define "k8s-node3" do |node3|
+    node3.vm.box = "generic/ubuntu2204"
+    node3.vm.box_version = "4.3.12"
+    # config.vm.network "forwarded_port", guest: 80, host: 8080
+    # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+    node3.vm.network "private_network", ip: "192.168.56.103"
+    node3.vm.network "public_network"
+    # config.vm.synced_folder ".", "/vagrant", disabled: true
+    
+    node3.vm.hostname = "k8s-node1"
+    node3.vm.disk :disk, size: "50GB", name: "k8s-node3-disk"
+    node3.vm.provider "virtualbox" do |vb|
+      vb.gui = true
+      vb.memory = "4096"
+      vb.cpus = "2"
+    end
+    node3.vm.provision "shell", path: "config.sh"
+    node3.vm.provision "shell", path: "kube_install.sh"
+  end
+end
